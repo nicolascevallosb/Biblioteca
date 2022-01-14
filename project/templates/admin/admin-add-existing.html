@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="layoutAuthentication" class="bg-primary row justify-content-center container-fluid px-4">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-5">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header">
+                                <h3 class="text-center font-weight-light my-4">¿Cuántos ejemplares desea añadir?</h3>
+                            </div>
+                            <div class="card-body">
+
+                                <form id="acceptForm" method="POST" action="/accept">
+
+                                    <div class="form-floating mb-3">
+                                        <div class="control">
+                                            <p style="font-weight: bold;">Código: </p><p class="ps-3">{{code}}</p>
+                                            <input class="form-control" type="hidden" name="code" value="{{code}}">
+                                            <p style="font-weight: bold;">Título: </p><p class="ps-3">{{title}}</p>
+                                            <p style="font-weight: bold;">Autor: </p><p class="ps-3">{{author}}</p>
+                                            <p style="font-weight: bold;">Cantidad disponible: </p><p class="ps-3">{{stock}}</p>
+                                            <input class="form-control" type="number" name="new" placeholder="Cantidad nueva..." required>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-between mt-4 mb-0" style="padding-left: 110px; padding-right: 110px;">
+                                        <a href="{{url_for('usuario.profile')}}" class="btn btn-danger">Cancelar</a>
+                                        <button id="acceptButton" class="btn btn-success">Añadir</button>
+
+                                        <img src="{{ url_for('static', filename='img/loading.gif')}}"
+                                            id="loading" style="width: 100px; height: 100px; display:none;" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script>
+    // bind the form submit event to our function
+    $("#acceptForm").bind('submit', function (e) {
+        // prevent page refresh
+        e.preventDefault();
+        // post the data
+        var formData          = {};
+        formData.code         = $('input[name="code"]').val();
+        formData.new          = $('input[name="new"]').val();
+
+        var ajax = $.ajax({
+            type: "POST",
+            data: JSON.stringify(formData),
+            contentType: 'application/json;charset=UTF-8',
+            dataType: "json",
+            url: "ajax_add_existing",
+            beforeSend: function () {
+                $('#loading').show();
+                $('#acceptButton').hide();
+            },
+            complete: function () {
+                $('#loading').hide();
+                $('#acceptButton').show();
+            },
+            success: function (responseJson) {
+                alert('Success: ' + responseJson.message);
+                location.href = "{{ url_for('usuario.profile')}}"
+            },
+            error: function (response) {
+                let json = response.responseJSON;
+                alert('Error: ' + json.message);
+            }
+        });
+    });
+</script>
+
+{% endblock %}

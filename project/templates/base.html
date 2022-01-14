@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Biblioteca Dátil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}" />
+    <script src="{{ url_for('static', filename='js/jquery.js')}}"></script>
+</head>
+
+<body class="sb-nav-fixed">
+    <div style="margin-bottom: 50px;">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            
+            <a class="navbar-brand ps-3" href="{{url_for('main.index')}}">Biblioteca Digital</a>
+
+            <div class="justify-content-right">
+                {% if current_user.is_authenticated %}
+                <a class="btn btn-outline-info" href="{{ url_for('usuario.profile') }}">Profile</a>
+                <a class="btn btn-outline-info" href="{{ url_for('auth.logout') }}">Log Out</a>
+                {% endif %}
+                {% if not current_user.is_authenticated %}
+                <a class="btn btn-outline-info" href="{{ url_for('auth.login') }}">Login</a>
+                <a class="btn btn-outline-info" href="{{ url_for('auth.signup') }}">Register</a>
+                {% endif %}
+            </div>
+
+        </nav>
+    </div>
+
+    <div>
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.js')}}" crossorigin="anonymous"></script>
+</body>
+
+</html>

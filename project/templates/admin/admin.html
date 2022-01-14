@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+Bienvenido {{user_name}}<br>
+
+<form id="searchForm" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" method="POST" action="/search">
+    <div class="input-group">
+        <label class="ps-3" style="padding-top: 10px; font-weight: bold;" for="code"><pre>Buscar Libro: </pre></label>
+        <input class="form-control" style="width: 300px;" type="text" placeholder="Ingresar código para buscar libro..." name="code" />
+        <img src="{{ url_for('static', filename='img/loading.gif')}}" id="loading" style="padding-left:10px; width: 30px; height: 30px; display:none;" />
+    </div><br>
+</form>
+
+<div class="card mb-4">
+    <div class="card-header" style="padding-right: 200px;">
+        <i class="fas fa-table me-1"></i>
+        Lista de Libros:
+        <a href="{{url_for('usuario.add')}}" id="add" class="btn btn-outline-dark" style="float: right;">Añadir Libro</a>
+    </div>
+
+    <div class="card-body">
+
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Código</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Disponibles</th>
+                    <th>Añadir</th>
+                </tr>
+            </thead>
+
+            <tbody class="table-light table-striped table-hover">
+                {% for row in table_book %}
+                <tr>
+                    <th> {{ row[1] }}</th>
+                    <th> {{ row[3] }}</th>
+                    <th> {{ row[2] }} </th>
+                    <th> {{ row[4] }} </th>
+                    <th>
+                        <div style="display: flex;">
+                            <form id="codeForm" method="POST" action="/add_existing">
+                                
+                                <input type="hidden" name="code" value="{{ row[1] }}" />
+                                <div class="d-grid"><button id="codeButton" class="btn btn-success">+</button></div>
+                                
+                            </form>
+                        </div>
+                    </th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script>
+    // bind the form submit event to our function
+    $("#searchForm").bind('submit', function (e) {
+        // prevent page refresh
+        e.preventDefault();
+        // post the data
+        var formData = {};
+        formData.code = $('input[name="code"]').val();
+
+        var ajax = $.ajax({
+            type: "POST",
+            data: JSON.stringify(formData),
+            contentType: 'application/json;charset=UTF-8',
+            dataType: "json",
+            url: "ajax_search",
+            beforeSend: function () {
+                $('#loading').show();
+            },
+            complete: function () {
+                $('#loading').hide();
+            },
+            success: function (responseJson) {
+                alert(responseJson.message);
+                location.href = "{{ url_for('usuario.profile')}}"
+            },
+            error: function (response) {
+                let json = response.responseJSON;
+                alert(json.message);
+            }
+        });
+    });
+</script>
+
+{% endblock %}

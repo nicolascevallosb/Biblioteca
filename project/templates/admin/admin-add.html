@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="layoutAuthentication" class="bg-primary row justify-content-center container-fluid px-4">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-5">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header">
+                                <h3 class="text-center font-weight-light my-4">Ingresar Datos del Nuevo Libro</h3>
+                            </div>
+                            <div class="card-body">
+
+                                <form id="addForm" method="POST" action="/add">
+
+                                    <div class="form-floating mb-3">
+                                        <div class="control">
+                                            <input class="form-control" type="text" name="code" placeholder="Código" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <div class="control">
+                                            <input class="form-control" type="text" name="title" placeholder="Título" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <div class="control">
+                                            <input class="form-control" type="text" name="author" placeholder="Autor" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <div class="control">
+                                            <input class="form-control" type="number" name="stock" placeholder="Cantidad" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                        <button id="addButton" class="btn btn-primary"
+                                            style="background-color:gray;">Añadir Libro</button>
+
+                                        <img src="{{ url_for('static', filename='img/loading.gif')}}"
+                                            id="loading" style="width: 100px; height: 100px; display:none;" />
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-footer text-center py-3">
+                                <div class="small"><a href="{{ url_for('usuario.profile')}}">Regresar al perfil</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script>
+    // bind the form submit event to our function
+    $("#addForm").bind('submit', function (e) {
+        // prevent page refresh
+        e.preventDefault();
+        // post the data
+        var formData = {};
+        formData.code = $('input[name="code"]').val();
+        formData.title = $('input[name="title"]').val();
+        formData.author = $('input[name="author"]').val();
+        formData.stock = $('input[name="stock"]').val();
+
+        var ajax = $.ajax({
+            type: "POST",
+            data: JSON.stringify(formData),
+            contentType: 'application/json;charset=UTF-8',
+            dataType: "json",
+            url: "ajax_add",
+            beforeSend: function () {
+                $('#loading').show();
+                $('#addButton').hide();
+            },
+            complete: function () {
+                $('#loading').hide();
+                $('#addButton').show();
+            },
+            success: function (responseJson) {
+                alert('Success: ' + responseJson.message);
+                location.href = "{{ url_for('usuario.profile')}}"
+            },
+            error: function (response) {
+                let json = response.responseJSON;
+                alert('Error: ' + json.message);
+            }
+        });
+    });
+</script>
+
+{% endblock %}

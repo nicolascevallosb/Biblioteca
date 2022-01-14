@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+Bienvenido {{user_name}}<br>
+
+<div class="card mb-4">
+
+    <div class="card-header">
+        <i class="fas fa-table me-1 ps-3">Mis Préstamos:</i>
+    </div>
+
+    <div class="card-body">
+
+        <table class="table"> 
+
+            <thead class="table-dark">
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Fecha de Emisión</th>
+                    <th>Fecha de Devolución</th>
+                </tr>
+            </thead>
+
+            <tbody class="table-striped">
+                {% for row in table_borrowed %}
+                {% if row[1] == id_student %}
+                <tr>
+                    <th> {{ row[3] }} </th>
+                    <th> {{ row[4] }} </th>
+                    <th> {{ row[5] }} </th>
+                    <th> {{ row[6] }} </th>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-4">
+
+    <div class="card-header" style="padding-right: 200px;">
+        <i class="fas fa-table me-1 ps-3">Catálogo:</i>
+        <!-- <a href="{{url_for('usuario.loan')}}" id="add" class="btn btn-outline-dark" style="float: right;">Hacer un Préstamo</a> -->
+    </div>
+
+    <div class="card-body">
+
+        <table class="table">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>Código</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Disponibles</th>
+                    <th>Prestar</th>
+                </tr>
+            </thead>
+
+            <tbody class="table-striped">
+                {% for row in table_book %}
+                <tr>
+                    <th> {{ row[1] }}</th>
+                    <th> {{ row[3] }}</th>
+                    <th> {{ row[2] }} </th>
+                    <th> {{ row[4] }} </th>
+                    <th>
+                        <div style="display: flex;">
+                            <form id="codeForm" method="POST" action="/loan">
+                                
+                                <input type="hidden" name="code" value="{{ row[1] }}" />
+                                <div class="d-grid"><button id="codeButton" class="btn btn-success">✔</button></div>
+                                
+                            </form>
+                        </div>
+                    </th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
