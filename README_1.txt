@@ -5,6 +5,10 @@ Para correr este proyecto seguir los siguientes pasos (desde la consola):
 	- $ python3 -m venv env
 	- $ source env/bin/activate
 
+Recomendación: Seleccionar intérprete:
+
+	View -> Command Palette -> Select Interpreter -> Seleccionar el que tenga el ambiente virtual
+
 2. Instalar las dependencias:
 
 	- $ pip install --upgrade pip
